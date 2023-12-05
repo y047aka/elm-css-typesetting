@@ -1,0 +1,17 @@
+{
+    "type": "package",
+    "name": "y047aka/elm-css-typography",
+    "summary": "A typography of colors for elm-css",
+    "license": "MIT",
+    "version": "1.0.0",
+    "exposed-modules": [
+        "Css.Palette"
+    ],
+    "elm-version": "0.19.1 <= v < 0.20.0",
+    "dependencies": {
+        "elm/core": "1.0.5 <= v < 2.0.0",
+        "rtfeldman/elm-css": "18.0.0 <= v < 19.0.0"
+    },
+    "test-dependencies": {
+    }
+}
