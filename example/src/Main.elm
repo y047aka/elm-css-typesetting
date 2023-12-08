@@ -5,6 +5,7 @@ import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children, everything)
 import Css.Palette exposing (palette, paletteWithBorder)
+import Css.TextBlock as TextBlock exposing (TextBlock, WordBreak(..), textBlock, OverflowWrap(..))
 import Css.Typography as Typography exposing (Typography, typography)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
@@ -28,6 +29,7 @@ main =
 
 type alias Model =
     { typography : Typography
+    , textBlock : TextBlock
     , fontSize : Float
     , lineHeight : Float
     , letterSpacing : Float
@@ -43,6 +45,7 @@ init () =
                 |> Typography.setFontWeight Css.normal
                 |> Typography.setLineHeight (num 1.5)
                 |> Typography.setTextDecoration Css.none
+      , textBlock = TextBlock.init
       , fontSize = 16
       , lineHeight = 1.5
       , letterSpacing = 0
@@ -112,6 +115,7 @@ radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transpar
                             , flexDirection column
                             , rowGap (Css.em 1)
                             , typography model.typography
+                            , textBlock model.textBlock
                             ]
                         ]
                         [ p [] [ text "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." ]
@@ -258,6 +262,59 @@ radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transpar
                                             , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) - 1) / 100))
                                         }
                                     )
+                            }
+                        ]
+                    , Props.FieldSet "word-break"
+                        [ Props.radio
+                            { value = model.textBlock.wordBreak |> Maybe.map TextBlock.wordBreakToString |> Maybe.withDefault "-"
+                            , options = [ "normal", "break-all", "keep-all", "auto-phrase" ]
+                            , onChange =
+                                (\wordBreak m ->
+                                    { m
+                                        | textBlock =
+                                            case wordBreak of
+                                                "normal" ->
+                                                    m.textBlock |> TextBlock.setWordBreak Normal_WordBreak
+
+                                                "break-all" ->
+                                                    m.textBlock |> TextBlock.setWordBreak BreakAll
+
+                                                "keep-all" ->
+                                                    m.textBlock |> TextBlock.setWordBreak KeepAll
+
+                                                "auto-phrase" ->
+                                                    m.textBlock |> TextBlock.setWordBreak AutoPhrase
+
+                                                _ ->
+                                                    m.textBlock
+                                    }
+                                )
+                                    >> UpdateProps
+                            }
+                        ]
+                    , Props.FieldSet "overflow-wrap"
+                        [ Props.radio
+                            { value = model.textBlock.overflowWrap |> Maybe.map TextBlock.overflowWrapToString |> Maybe.withDefault "-"
+                            , options = [ "normal", "break-word", "anywhere" ]
+                            , onChange =
+                                (\overflowWrap m ->
+                                    { m
+                                        | textBlock =
+                                            case overflowWrap of
+                                                "normal" ->
+                                                    m.textBlock |> TextBlock.setOverflowWrap Normal_OverflowWrap
+
+                                                "break-word" ->
+                                                    m.textBlock |> TextBlock.setOverflowWrap BreakWord
+
+                                                "anywhere" ->
+                                                    m.textBlock |> TextBlock.setOverflowWrap Anywhere
+
+                                                _ ->
+                                                    m.textBlock
+                                    }
+                                )
+                                    >> UpdateProps
                             }
                         ]
                     ]
