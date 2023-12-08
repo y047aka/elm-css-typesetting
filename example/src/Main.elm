@@ -5,7 +5,7 @@ import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children, everything)
 import Css.Palette exposing (palette, paletteWithBorder)
-import Css.TextBlock as TextBlock exposing (TextBlock, WordBreak(..), textBlock, OverflowWrap(..))
+import Css.TextBlock as TextBlock exposing (OverflowWrap(..), TextBlock, WordBreak(..), textBlock)
 import Css.Typography as Typography exposing (Typography, typography)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
@@ -46,6 +46,8 @@ init () =
                 |> Typography.setLineHeight (num 1.5)
                 |> Typography.setTextDecoration Css.none
       , textBlock = TextBlock.init
+                |> TextBlock.setWordBreak Normal_WordBreak
+                |> TextBlock.setOverflowWrap Normal_OverflowWrap
       , fontSize = 16
       , lineHeight = 1.5
       , letterSpacing = 0
@@ -268,57 +270,65 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                     )
                             }
                         ]
-                    , Props.FieldSet "word-break"
-                        [ Props.radio
-                            { value = model.textBlock.wordBreak |> Maybe.map TextBlock.wordBreakToString |> Maybe.withDefault "-"
-                            , options = [ "normal", "break-all", "keep-all", "auto-phrase" ]
-                            , onChange =
-                                (\wordBreak m ->
-                                    { m
-                                        | textBlock =
-                                            case wordBreak of
-                                                "normal" ->
-                                                    m.textBlock |> TextBlock.setWordBreak Normal_WordBreak
+                    , Props.FieldSet "TextBlock"
+                        [ Props.field
+                            { label = "word-break"
+                            , props =
+                                Props.radio
+                                    { value = model.textBlock.wordBreak |> Maybe.map TextBlock.wordBreakToString |> Maybe.withDefault "-"
+                                    , options = [ "normal", "break-all", "keep-all", "auto-phrase" ]
+                                    , onChange =
+                                        (\wordBreak m ->
+                                            { m
+                                                | textBlock =
+                                                    case wordBreak of
+                                                        "normal" ->
+                                                            m.textBlock |> TextBlock.setWordBreak Normal_WordBreak
 
-                                                "break-all" ->
-                                                    m.textBlock |> TextBlock.setWordBreak BreakAll
+                                                        "break-all" ->
+                                                            m.textBlock |> TextBlock.setWordBreak BreakAll
 
-                                                "keep-all" ->
-                                                    m.textBlock |> TextBlock.setWordBreak KeepAll
+                                                        "keep-all" ->
+                                                            m.textBlock |> TextBlock.setWordBreak KeepAll
 
-                                                "auto-phrase" ->
-                                                    m.textBlock |> TextBlock.setWordBreak AutoPhrase
+                                                        "auto-phrase" ->
+                                                            m.textBlock |> TextBlock.setWordBreak AutoPhrase
 
-                                                _ ->
-                                                    m.textBlock
+                                                        _ ->
+                                                            m.textBlock
+                                            }
+                                        )
+                                            >> UpdateProps
                                     }
-                                )
-                                    >> UpdateProps
+                            , note = ""
                             }
-                        ]
-                    , Props.FieldSet "overflow-wrap"
-                        [ Props.radio
-                            { value = model.textBlock.overflowWrap |> Maybe.map TextBlock.overflowWrapToString |> Maybe.withDefault "-"
-                            , options = [ "normal", "break-word", "anywhere" ]
-                            , onChange =
-                                (\overflowWrap m ->
-                                    { m
-                                        | textBlock =
-                                            case overflowWrap of
-                                                "normal" ->
-                                                    m.textBlock |> TextBlock.setOverflowWrap Normal_OverflowWrap
+                        , Props.field
+                            { label = "overflow-wrap"
+                            , props =
+                                Props.radio
+                                    { value = model.textBlock.overflowWrap |> Maybe.map TextBlock.overflowWrapToString |> Maybe.withDefault "-"
+                                    , options = [ "normal", "break-word", "anywhere" ]
+                                    , onChange =
+                                        (\overflowWrap m ->
+                                            { m
+                                                | textBlock =
+                                                    case overflowWrap of
+                                                        "normal" ->
+                                                            m.textBlock |> TextBlock.setOverflowWrap Normal_OverflowWrap
 
-                                                "break-word" ->
-                                                    m.textBlock |> TextBlock.setOverflowWrap BreakWord
+                                                        "break-word" ->
+                                                            m.textBlock |> TextBlock.setOverflowWrap BreakWord
 
-                                                "anywhere" ->
-                                                    m.textBlock |> TextBlock.setOverflowWrap Anywhere
+                                                        "anywhere" ->
+                                                            m.textBlock |> TextBlock.setOverflowWrap Anywhere
 
-                                                _ ->
-                                                    m.textBlock
+                                                        _ ->
+                                                            m.textBlock
+                                            }
+                                        )
+                                            >> UpdateProps
                                     }
-                                )
-                                    >> UpdateProps
+                            , note = ""
                             }
                         ]
                     ]

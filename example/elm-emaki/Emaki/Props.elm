@@ -202,7 +202,7 @@ render props =
                     , rowGap (em 0.25)
                     ]
                 ]
-                [ div [] [ Html.label [] [ text label ] ]
+                [ div [] [ Html.label [ css [ fontWeight bold ] ] [ text label ] ]
                 , render ps
                 , div [ css [ palette Palette.textOptional ] ] [ text note ]
                 ]
