@@ -118,12 +118,16 @@ radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transpar
                             , textBlock model.textBlock
                             ]
                         ]
-                        [ p [] [ text "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." ]
-                        , p [] [ text "あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモリーオ市、郊外のぎらぎらひかる草の波。" ]
-                        , p [] [ text "日本国民は正当に選挙された国会における代表者を通じて行動し、われらとわれらの子孫のために、諸国民と協和による成果と、わが国全土にわたって自由のもたらす恵沢を確保し、政府の行為によって再び戦争の惨禍が起こることのないようにすることを決意し、ここに主権が国民に存することを宣言し、この憲法を確定する。そもそも国政は国民の厳粛な信託によるものであって、その権威は国民に由来し、その権力は国民の代表者がこれを行使し、その福利は国民がこれを享受する。これは人類普遍の原理であり、この憲法は、かかる原理に基づくものである。われらはこれに反する一切の憲法、法令及び詔勅を排除する。" ]
-                        , p [] [ text "日本国民は、恒久の平和を念願し、人間相互の関係を支配する崇高な理想を深く自覚するのであって、平和を愛する諸国民の公正と信義を信頼して、われらの安全と生存を保持しようと決意した。われらは平和を維持し、専制と隷従、圧迫と偏狭を地上から永遠に除去しようと努めている国際社会において、名誉ある地位を占めたいと思う。われらは全世界の国民が、ひとしく恐怖と欠乏から免れ、平和の内に生存する権利を有することを確認する。" ]
-                        , p [] [ text "われらは、いずれの国家も、自国のことのみに専念して他国を無視してはならないのであって、政治道徳の法則は、普遍的なものであり、この法則に従うことは、自国の主権を維持し、他国と対等関係に立とうとする各国の責務であると信ずる。" ]
-                        , p [] [ text "日本国民は、国家の名誉にかけて、全力をあげて崇高な理想と目的を達成することを誓う。" ]
+                        [ p [] [ text """We the Peoples of the United Nations Determined
+to save succeeding generations from the scourge of war, which twice in our lifetime has brought untold sorrow to mankind, and
+to reaffirm faith in fundamental human rights, in the dignity and worth of the human person, in the equal rights of men and women and of nations large and small, and to establish conditions under which justice and respect for the obligations arising from treaties and other sources of international law can be maintained, and to promote social progress and better standards of life in larger freedom, And for these Ends
+to practice tolerance and live together in peace with one another as good neighbors, and to unite our strength to maintain international peace and security, and
+to ensure by the acceptance of principles and the institution of methods, that armed force shall not be used, save in the common interest, and
+to employ international machinery for the promotion of the economic and social advancement of all peoples,
+Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
+                        , p [] [ text "Accordingly, our respective Governments, through representatives assembled in the city of San Francisco, who have exhibited their full powers found to be in good and due form, have agreed to the present Charter of the United Nations and do hereby establish an international organization to be known as the United Nations." ]
+                        , p [] [ text "われら連合国の人民は、われらの一生のうち二度まで言語に絶する悲哀を人類に与えた戦争の惨害から将来の世代を救い、基本的人権と人間の尊厳及び価値と男女及び大小各国の同権とに関する信念を改めて確認し、正義と条約その他の国際法の源泉から生ずる義務の尊重とを維持することができる条件を確立し、一層大きな自由の中で社会的進歩と生活水準の向上とを促進すること、並びに、このために、寛容を実行し、且つ、善良な隣人として互に平和に生活し、国際の平和および安全を維持するためにわれらの力を合わせ、共同の利益の場合を除く外は武力を用いないことを原則の受諾と方法の設定によって確保し、すべての人民の経済的及び社会的発達を促進するために国際機構を用いることを決意して、これらの目的を達成するために、われらの努力を結集することに決定した。" ]
+                        , p [] [ text "よって、われらの各自の政府は、サンフランシスコ市に会合し、全権委任状を示してそれが良好妥当であると認められた代表者を通じて、この国際連合憲章に同意したので、ここに国際連合という国際機構を設ける。" ]
                         ]
                 , props =
                     [ Props.FieldSet "font-family"
