@@ -1,6 +1,7 @@
 module Css.Typography exposing
     ( Typography, init
     , typography
+    , TextAlign(..), textAlignToString
     , setFontFamilies, setFontSize, setFontStyle, setFontWeight, setTextAlign, setLineHeight, setLetterSpacing, setTextDecoration, setTextTransform
     )
 
@@ -8,6 +9,7 @@ module Css.Typography exposing
 
 @docs Typography, init
 @docs typography
+@docs TextAlign, textAlignToString
 @docs setFontFamilies, setFontSize, setFontStyle, setFontWeight, setTextAlign, setLineHeight, setLetterSpacing, setTextDecoration, setTextTransform
 
 -}
@@ -27,6 +29,13 @@ type alias Typography =
     , textDecoration : Maybe (TextDecorationLine {})
     , textTransform : Maybe (TextTransform {})
     }
+
+
+type TextAlign
+    = Left
+    | Right
+    | Center
+    | Justify
 
 
 type alias LineHeight compatible =
@@ -126,3 +135,23 @@ setTextDecoration { value, textDecorationLine } t =
 setTextTransform : TextTransform compatible -> Typography -> Typography
 setTextTransform { value, textTransform } t =
     { t | textTransform = Just { value = value, textTransform = textTransform } }
+
+
+
+-- TEXT ALIGN
+
+
+textAlignToString : TextAlign -> String
+textAlignToString textAlign =
+    case textAlign of
+        Left ->
+            "left"
+
+        Right ->
+            "right"
+
+        Center ->
+            "center"
+
+        Justify ->
+            "justify"
