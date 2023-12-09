@@ -2,6 +2,7 @@ module Css.Typography exposing
     ( Typography, init
     , typography
     , TextAlign(..), textAlignToString
+    , WebkitFontSmoothing(..), webkitFontSmoothingToString, webkitFontSmoothing
     , setFontFamilies, setFontSize, setFontStyle, setFontWeight, setTextAlign, setLineHeight, setLetterSpacing, setTextDecoration, setTextTransform
     )
 
@@ -10,6 +11,7 @@ module Css.Typography exposing
 @docs Typography, init
 @docs typography
 @docs TextAlign, textAlignToString
+@docs WebkitFontSmoothing, webkitFontSmoothingToString, webkitFontSmoothing
 @docs setFontFamilies, setFontSize, setFontStyle, setFontWeight, setTextAlign, setLineHeight, setLetterSpacing, setTextDecoration, setTextTransform
 
 -}
@@ -155,3 +157,35 @@ textAlignToString textAlign =
 
         Justify ->
             "justify"
+
+
+
+-- FONT SMOOTHING
+
+
+type WebkitFontSmoothing
+    = Auto
+    | None
+    | Antialiased
+    | SubpixelAntialiased
+
+
+webkitFontSmoothingToString : WebkitFontSmoothing -> String
+webkitFontSmoothingToString fm =
+    case fm of
+        Auto ->
+            "auto"
+
+        None ->
+            "none"
+
+        Antialiased ->
+            "antialiased"
+
+        SubpixelAntialiased ->
+            "subpixel-antialiased"
+
+
+webkitFontSmoothing : WebkitFontSmoothing -> Style
+webkitFontSmoothing fs =
+    Css.property "-webkit-font-smoothing" (webkitFontSmoothingToString fs)
