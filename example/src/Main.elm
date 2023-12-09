@@ -6,7 +6,7 @@ import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children, everything)
 import Css.Palette exposing (palette, paletteWithBorder)
 import Css.TextBlock as TextBlock exposing (OverflowWrap(..), TextBlock, WordBreak(..), textBlock)
-import Css.Typography as Typography exposing (Typography, typography)
+import Css.Typography as Typography exposing (TextAlign(..), Typography, typography)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
 import Html.Styled exposing (..)
@@ -31,6 +31,7 @@ type alias Model =
     { typography : Typography
     , textBlock : TextBlock
     , fontSize : Float
+    , textAlign : TextAlign
     , lineHeight : Float
     , letterSpacing : Float
     }
@@ -45,10 +46,13 @@ init () =
                 |> Typography.setFontWeight Css.normal
                 |> Typography.setLineHeight (num 1.5)
                 |> Typography.setTextDecoration Css.none
-      , textBlock = TextBlock.init
+                |> Typography.setTextTransform Css.none
+      , textBlock =
+            TextBlock.init
                 |> TextBlock.setWordBreak Normal_WordBreak
                 |> TextBlock.setOverflowWrap Normal_OverflowWrap
       , fontSize = 16
+      , textAlign = Left
       , lineHeight = 1.5
       , letterSpacing = 0
       }
@@ -132,142 +136,265 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                         , p [] [ text "よって、われらの各自の政府は、サンフランシスコ市に会合し、全権委任状を示してそれが良好妥当であると認められた代表者を通じて、この国際連合憲章に同意したので、ここに国際連合という国際機構を設ける。" ]
                         ]
                 , props =
-                    [ Props.FieldSet "font-family"
-                        [ Props.select
-                            { value = model.typography.fontFamilies |> String.concat
-                            , options = [ Css.sansSerif.value, Css.serif.value ]
-                            , onChange =
-                                (\fontFamily m ->
-                                    { m
-                                        | typography =
-                                            case fontFamily of
-                                                "sans-serif" ->
-                                                    m.typography |> Typography.setFontFamilies [ "sans-serif" ]
+                    [ Props.FieldSet "Typography"
+                        [ Props.field
+                            { label = "font-family"
+                            , props =
+                                Props.select
+                                    { value = model.typography.fontFamilies |> String.concat
+                                    , options = [ Css.sansSerif.value, Css.serif.value ]
+                                    , onChange =
+                                        (\fontFamily m ->
+                                            { m
+                                                | typography =
+                                                    case fontFamily of
+                                                        "sans-serif" ->
+                                                            m.typography |> Typography.setFontFamilies [ "sans-serif" ]
 
-                                                "serif" ->
-                                                    m.typography |> Typography.setFontFamilies [ "serif" ]
+                                                        "serif" ->
+                                                            m.typography |> Typography.setFontFamilies [ "serif" ]
 
-                                                _ ->
-                                                    m.typography
+                                                        _ ->
+                                                            m.typography
+                                            }
+                                        )
+                                            >> UpdateProps
                                     }
-                                )
-                                    >> UpdateProps
+                            , note = ""
                             }
-                        ]
-                    , Props.FieldSet "font-size"
-                        [ Props.counter
-                            { value = model.fontSize
-                            , toString = \value -> String.fromFloat value ++ "px"
-                            , onClickPlus =
-                                UpdateProps
-                                    (\m ->
-                                        { m
-                                            | fontSize = m.fontSize + 1
-                                            , typography = m.typography |> Typography.setFontSize (px (m.fontSize + 1))
-                                        }
-                                    )
-                            , onClickMinus =
-                                UpdateProps
-                                    (\m ->
-                                        { m
-                                            | fontSize = m.fontSize - 1
-                                            , typography = m.typography |> Typography.setFontSize (px (m.fontSize - 1))
-                                        }
-                                    )
-                            }
-                        ]
-                    , Props.FieldSet "font-weight"
-                        [ Props.radio
-                            { value = model.typography.fontWeight |> Maybe.map .value |> Maybe.withDefault "-"
-                            , options = [ Css.lighter.value, Css.normal.value, Css.bold.value, Css.bolder.value ]
-                            , onChange =
-                                (\weight m ->
-                                    { m
-                                        | typography =
-                                            case weight of
-                                                "lighter" ->
-                                                    m.typography |> Typography.setFontWeight Css.lighter
-
-                                                "normal" ->
-                                                    m.typography |> Typography.setFontWeight Css.normal
-
-                                                "bold" ->
-                                                    m.typography |> Typography.setFontWeight Css.bold
-
-                                                "bolder" ->
-                                                    m.typography |> Typography.setFontWeight Css.bolder
-
-                                                _ ->
-                                                    m.typography
+                        , Props.field
+                            { label = "font-size"
+                            , props =
+                                Props.counter
+                                    { value = model.fontSize
+                                    , toString = \value -> String.fromFloat value ++ "px"
+                                    , onClickPlus =
+                                        UpdateProps
+                                            (\m ->
+                                                { m
+                                                    | fontSize = m.fontSize + 1
+                                                    , typography = m.typography |> Typography.setFontSize (px (m.fontSize + 1))
+                                                }
+                                            )
+                                    , onClickMinus =
+                                        UpdateProps
+                                            (\m ->
+                                                { m
+                                                    | fontSize = m.fontSize - 1
+                                                    , typography = m.typography |> Typography.setFontSize (px (m.fontSize - 1))
+                                                }
+                                            )
                                     }
-                                )
-                                    >> UpdateProps
+                            , note = ""
                             }
-                        ]
-                    , Props.FieldSet "line-height"
-                        [ Props.counter
-                            { value = model.lineHeight
-                            , toString = \value -> String.fromFloat value
-                            , onClickPlus =
-                                UpdateProps
-                                    (\m ->
-                                        { m
-                                            | lineHeight = ((m.lineHeight * 10) + 1) / 10
-                                            , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) + 1) / 10))
-                                        }
-                                    )
-                            , onClickMinus =
-                                UpdateProps
-                                    (\m ->
-                                        { m
-                                            | lineHeight = ((m.lineHeight * 10) - 1) / 10
-                                            , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) - 1) / 10))
-                                        }
-                                    )
-                            }
-                        ]
-                    , Props.FieldSet "text-decoration"
-                        [ Props.radio
-                            { value = model.typography.textDecoration |> Maybe.map .value |> Maybe.withDefault "-"
-                            , options = [ Css.none.value, Css.underline.value ]
-                            , onChange =
-                                (\decoration m ->
-                                    { m
-                                        | typography =
-                                            case decoration of
-                                                "none" ->
-                                                    m.typography |> Typography.setTextDecoration Css.none
+                        , Props.field
+                            { label = "font-style"
+                            , props =
+                                Props.radio
+                                    { value = model.typography.fontStyle |> Maybe.map .value |> Maybe.withDefault "-"
+                                    , options = [ Css.normal.value, Css.italic.value ]
+                                    , onChange =
+                                        (\style m ->
+                                            { m
+                                                | typography =
+                                                    case style of
+                                                        "normal" ->
+                                                            m.typography |> Typography.setFontStyle Css.normal
 
-                                                "underline" ->
-                                                    m.typography |> Typography.setTextDecoration Css.underline
+                                                        "italic" ->
+                                                            m.typography |> Typography.setFontStyle Css.italic
 
-                                                _ ->
-                                                    m.typography
+                                                        _ ->
+                                                            m.typography
+                                            }
+                                        )
+                                            >> UpdateProps
                                     }
-                                )
-                                    >> UpdateProps
+                            , note = ""
                             }
-                        ]
-                    , Props.FieldSet "letter-spacing"
-                        [ Props.counter
-                            { value = model.letterSpacing
-                            , toString = \value -> String.fromFloat value ++ "em"
-                            , onClickPlus =
-                                UpdateProps
-                                    (\m ->
-                                        { m
-                                            | letterSpacing = ((m.letterSpacing * 100) + 1) / 100
-                                            , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) + 1) / 100))
-                                        }
-                                    )
-                            , onClickMinus =
-                                UpdateProps
-                                    (\m ->
-                                        { m
-                                            | letterSpacing = ((m.letterSpacing * 100) - 1) / 100
-                                            , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) - 1) / 100))
-                                        }
-                                    )
+                        , Props.field
+                            { label = "font-weight"
+                            , props =
+                                Props.radio
+                                    { value = model.typography.fontWeight |> Maybe.map .value |> Maybe.withDefault "-"
+                                    , options = [ Css.lighter.value, Css.normal.value, Css.bold.value, Css.bolder.value ]
+                                    , onChange =
+                                        (\weight m ->
+                                            { m
+                                                | typography =
+                                                    case weight of
+                                                        "lighter" ->
+                                                            m.typography |> Typography.setFontWeight Css.lighter
+
+                                                        "normal" ->
+                                                            m.typography |> Typography.setFontWeight Css.normal
+
+                                                        "bold" ->
+                                                            m.typography |> Typography.setFontWeight Css.bold
+
+                                                        "bolder" ->
+                                                            m.typography |> Typography.setFontWeight Css.bolder
+
+                                                        _ ->
+                                                            m.typography
+                                            }
+                                        )
+                                            >> UpdateProps
+                                    }
+                            , note = ""
+                            }
+                        , Props.field
+                            { label = "text-align"
+                            , props =
+                                Props.radio
+                                    { value = model.textAlign |> Typography.textAlignToString
+                                    , options = [ "left", "center", "right", "justify" ]
+                                    , onChange =
+                                        (\align m ->
+                                            { m
+                                                | textAlign =
+                                                    case align of
+                                                        "left" ->
+                                                            Left
+
+                                                        "center" ->
+                                                            Center
+
+                                                        "right" ->
+                                                            Right
+
+                                                        "justify" ->
+                                                            Justify
+
+                                                        _ ->
+                                                            m.textAlign
+                                                , typography =
+                                                    case align of
+                                                        "left" ->
+                                                            m.typography |> Typography.setTextAlign Css.left
+
+                                                        "center" ->
+                                                            m.typography |> Typography.setTextAlign Css.center
+
+                                                        "right" ->
+                                                            m.typography |> Typography.setTextAlign Css.right
+
+                                                        "justify" ->
+                                                            m.typography |> Typography.setTextAlign Css.justify
+
+                                                        _ ->
+                                                            m.typography
+                                            }
+                                        )
+                                            >> UpdateProps
+                                    }
+                            , note = ""
+                            }
+                        , Props.field
+                            { label = "line-height"
+                            , props =
+                                Props.counter
+                                    { value = model.lineHeight
+                                    , toString = \value -> String.fromFloat value
+                                    , onClickPlus =
+                                        UpdateProps
+                                            (\m ->
+                                                { m
+                                                    | lineHeight = ((m.lineHeight * 10) + 1) / 10
+                                                    , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) + 1) / 10))
+                                                }
+                                            )
+                                    , onClickMinus =
+                                        UpdateProps
+                                            (\m ->
+                                                { m
+                                                    | lineHeight = ((m.lineHeight * 10) - 1) / 10
+                                                    , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) - 1) / 10))
+                                                }
+                                            )
+                                    }
+                            , note = ""
+                            }
+                        , Props.field
+                            { label = "text-decoration"
+                            , props =
+                                Props.radio
+                                    { value = model.typography.textDecoration |> Maybe.map .value |> Maybe.withDefault "-"
+                                    , options = [ Css.none.value, Css.underline.value ]
+                                    , onChange =
+                                        (\decoration m ->
+                                            { m
+                                                | typography =
+                                                    case decoration of
+                                                        "none" ->
+                                                            m.typography |> Typography.setTextDecoration Css.none
+
+                                                        "underline" ->
+                                                            m.typography |> Typography.setTextDecoration Css.underline
+
+                                                        _ ->
+                                                            m.typography
+                                            }
+                                        )
+                                            >> UpdateProps
+                                    }
+                            , note = ""
+                            }
+                        , Props.field
+                            { label = "letter-spacing"
+                            , props =
+                                Props.counter
+                                    { value = model.letterSpacing
+                                    , toString = \value -> String.fromFloat value ++ "em"
+                                    , onClickPlus =
+                                        UpdateProps
+                                            (\m ->
+                                                { m
+                                                    | letterSpacing = ((m.letterSpacing * 100) + 1) / 100
+                                                    , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) + 1) / 100))
+                                                }
+                                            )
+                                    , onClickMinus =
+                                        UpdateProps
+                                            (\m ->
+                                                { m
+                                                    | letterSpacing = ((m.letterSpacing * 100) - 1) / 100
+                                                    , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) - 1) / 100))
+                                                }
+                                            )
+                                    }
+                            , note = ""
+                            }
+                        , Props.field
+                            { label = "text-transform"
+                            , props =
+                                Props.radio
+                                    { value = model.typography.textTransform |> Maybe.map .value |> Maybe.withDefault "-"
+                                    , options = [ Css.none.value, Css.uppercase.value, Css.lowercase.value, Css.capitalize.value ]
+                                    , onChange =
+                                        (\transform m ->
+                                            { m
+                                                | typography =
+                                                    case transform of
+                                                        "none" ->
+                                                            m.typography |> Typography.setTextTransform Css.none
+
+                                                        "uppercase" ->
+                                                            m.typography |> Typography.setTextTransform Css.uppercase
+
+                                                        "lowercase" ->
+                                                            m.typography |> Typography.setTextTransform Css.lowercase
+
+                                                        "capitalize" ->
+                                                            m.typography |> Typography.setTextTransform Css.capitalize
+
+                                                        _ ->
+                                                            m.typography
+                                            }
+                                        )
+                                            >> UpdateProps
+                                    }
+                            , note = ""
                             }
                         ]
                     , Props.FieldSet "TextBlock"
@@ -372,7 +499,7 @@ playground { preview, props } =
                         [ padding (Css.em 0.75)
                         , displayFlex
                         , flexDirection column
-                        , rowGap (Css.em 0.5)
+                        , rowGap (Css.em 0.75)
                         , borderRadius (Css.em 0.5)
                         , palette Palette.propsField
                         ]
