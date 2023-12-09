@@ -6,7 +6,7 @@ import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children, everything)
 import Css.Palette exposing (palette, paletteWithBorder)
 import Css.TextBlock as TextBlock exposing (OverflowWrap(..), TextBlock, WordBreak(..), textBlock)
-import Css.Typography as Typography exposing (TextAlign(..), Typography, typography)
+import Css.Typography as Typography exposing (TextAlign(..), Typography, WebkitFontSmoothing(..), typography)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
 import Html.Styled exposing (..)
@@ -28,7 +28,8 @@ main =
 
 
 type alias Model =
-    { typography : Typography
+    { webkitFontSmoothing : WebkitFontSmoothing
+    , typography : Typography
     , textBlock : TextBlock
     , fontSize : Float
     , textAlign : TextAlign
@@ -39,7 +40,8 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { typography =
+    ( { webkitFontSmoothing = Auto
+      , typography =
             Typography.init
                 |> Typography.setFontFamilies [ "sans-serif" ]
                 |> Typography.setFontSize (px 16)
@@ -122,6 +124,10 @@ radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transpar
                             , rowGap (Css.em 1)
                             , typography model.typography
                             , textBlock model.textBlock
+                            , children
+                                [ everything
+                                    [ Typography.webkitFontSmoothing model.webkitFontSmoothing ]
+                                ]
                             ]
                         ]
                         [ p [] [ text """We the Peoples of the United Nations Determined
@@ -138,6 +144,37 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                 , props =
                     [ Props.FieldSet "Typography"
                         [ Props.field
+                            { label = "-webkit-font-smoothing"
+                            , props =
+                                Props.radio
+                                    { value = model.webkitFontSmoothing |> Typography.webkitFontSmoothingToString
+                                    , options = [ "auto", "none", "antialiased", "subpixel-antialiased" ]
+                                    , onChange =
+                                        (\webkitFontSmoothing m ->
+                                            { m
+                                                | webkitFontSmoothing =
+                                                    case webkitFontSmoothing of
+                                                        "auto" ->
+                                                            Auto
+
+                                                        "none" ->
+                                                            None
+
+                                                        "antialiased" ->
+                                                            Antialiased
+
+                                                        "subpixel-antialiased" ->
+                                                            SubpixelAntialiased
+
+                                                        _ ->
+                                                            m.webkitFontSmoothing
+                                            }
+                                        )
+                                            >> UpdateProps
+                                    }
+                            , note = ""
+                            }
+                        , Props.field
                             { label = "font-family"
                             , props =
                                 Props.select
