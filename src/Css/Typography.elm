@@ -1,18 +1,18 @@
 module Css.Typography exposing
     ( Typography, init
     , typography
-    , setFontFamilies, setFontSize, setFontStyle, setFontWeight, setLineHeight, setLetterSpacing, setTextDecoration, setTextTransform
+    , setFontFamilies, setFontSize, setFontStyle, setFontWeight, setTextAlign, setLineHeight, setLetterSpacing, setTextDecoration, setTextTransform
     )
 
 {-|
 
 @docs Typography, init
 @docs typography
-@docs setFontFamilies, setFontSize, setFontStyle, setFontWeight, setLineHeight, setLetterSpacing, setTextDecoration, setTextTransform
+@docs setFontFamilies, setFontSize, setFontStyle, setFontWeight, setTextAlign, setLineHeight, setLetterSpacing, setTextDecoration, setTextTransform
 
 -}
 
-import Css exposing (Compatible, FontSize, FontStyle, FontWeight, Length, Style, TextDecorationLine, TextTransform)
+import Css exposing (Compatible, ExplicitLength, FontSize, FontStyle, FontWeight, IncompatibleUnits, Length, Style, TextDecorationLine, TextTransform)
 
 
 {-| -}
@@ -21,6 +21,7 @@ type alias Typography =
     , fontSize : Maybe (FontSize {})
     , fontStyle : Maybe (FontStyle {})
     , fontWeight : Maybe (FontWeight {})
+    , textAlign : Maybe (ExplicitLength IncompatibleUnits -> Style)
     , lineHeight : Maybe (LineHeight {})
     , letterSpacing : Maybe (Length {} {})
     , textDecoration : Maybe (TextDecorationLine {})
@@ -39,6 +40,7 @@ init =
     , fontSize = Nothing
     , fontStyle = Nothing
     , fontWeight = Nothing
+    , textAlign = Nothing
     , lineHeight = Nothing
     , letterSpacing = Nothing
     , textDecoration = Nothing
@@ -58,6 +60,7 @@ typography t =
     , Maybe.map Css.fontSize t.fontSize
     , Maybe.map Css.fontStyle t.fontStyle
     , Maybe.map Css.fontWeight t.fontWeight
+    , Maybe.map Css.textAlign t.textAlign
     , Maybe.map Css.lineHeight t.lineHeight
     , Maybe.map Css.letterSpacing t.letterSpacing
     , Maybe.map Css.textDecoration t.textDecoration
@@ -93,6 +96,12 @@ setFontStyle { value, fontStyle } t =
 setFontWeight : FontWeight a -> Typography -> Typography
 setFontWeight { value, fontWeight } t =
     { t | fontWeight = Just { value = value, fontWeight = fontWeight } }
+
+
+{-| -}
+setTextAlign : (ExplicitLength IncompatibleUnits -> Style) -> Typography -> Typography
+setTextAlign textAlign t =
+    { t | textAlign = Just textAlign }
 
 
 {-| -}
