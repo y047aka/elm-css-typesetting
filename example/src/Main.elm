@@ -142,39 +142,39 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                         , p [] [ text "よって、われらの各自の政府は、サンフランシスコ市に会合し、全権委任状を示してそれが良好妥当であると認められた代表者を通じて、この国際連合憲章に同意したので、ここに国際連合という国際機構を設ける。" ]
                         ]
                 , props =
-                    [ Props.FieldSet "Typography"
+                    [ Props.field
+                        { label = "-webkit-font-smoothing"
+                        , props =
+                            Props.radio
+                                { value = model.webkitFontSmoothing |> Typography.webkitFontSmoothingToString
+                                , options = [ "auto", "none", "antialiased", "subpixel-antialiased" ]
+                                , onChange =
+                                    (\webkitFontSmoothing m ->
+                                        { m
+                                            | webkitFontSmoothing =
+                                                case webkitFontSmoothing of
+                                                    "auto" ->
+                                                        Auto
+
+                                                    "none" ->
+                                                        None
+
+                                                    "antialiased" ->
+                                                        Antialiased
+
+                                                    "subpixel-antialiased" ->
+                                                        SubpixelAntialiased
+
+                                                    _ ->
+                                                        m.webkitFontSmoothing
+                                        }
+                                    )
+                                        >> UpdateProps
+                                }
+                        , note = ""
+                        }
+                    , Props.FieldSet "Typography"
                         [ Props.field
-                            { label = "-webkit-font-smoothing"
-                            , props =
-                                Props.radio
-                                    { value = model.webkitFontSmoothing |> Typography.webkitFontSmoothingToString
-                                    , options = [ "auto", "none", "antialiased", "subpixel-antialiased" ]
-                                    , onChange =
-                                        (\webkitFontSmoothing m ->
-                                            { m
-                                                | webkitFontSmoothing =
-                                                    case webkitFontSmoothing of
-                                                        "auto" ->
-                                                            Auto
-
-                                                        "none" ->
-                                                            None
-
-                                                        "antialiased" ->
-                                                            Antialiased
-
-                                                        "subpixel-antialiased" ->
-                                                            SubpixelAntialiased
-
-                                                        _ ->
-                                                            m.webkitFontSmoothing
-                                            }
-                                        )
-                                            >> UpdateProps
-                                    }
-                            , note = ""
-                            }
-                        , Props.field
                             { label = "font-family"
                             , props =
                                 Props.select
