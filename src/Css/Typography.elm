@@ -1,22 +1,32 @@
 module Css.Typography exposing
     ( Typography, init
     , typography
+    , TextBlock, init_textBlock
+    , textBlock
     , TextAlign(..), textAlignToString
     , WebkitFontSmoothing(..), webkitFontSmoothingToString, webkitFontSmoothing
     , setFontFamilies, setFontSize, setFontStyle, setFontWeight, setTextAlign, setLineHeight, setLetterSpacing, setTextDecoration, setTextTransform
+    , setWordBreak, setOverflowWrap
+    , WordBreak(..), wordBreakToString
+    , OverflowWrap(..), overflowWrapToString
     )
 
 {-|
 
 @docs Typography, init
 @docs typography
+@docs TextBlock, init_textBlock
+@docs textBlock
 @docs TextAlign, textAlignToString
 @docs WebkitFontSmoothing, webkitFontSmoothingToString, webkitFontSmoothing
 @docs setFontFamilies, setFontSize, setFontStyle, setFontWeight, setTextAlign, setLineHeight, setLetterSpacing, setTextDecoration, setTextTransform
+@docs setWordBreak, setOverflowWrap
+@docs WordBreak, wordBreakToString
+@docs OverflowWrap, overflowWrapToString
 
 -}
 
-import Css exposing (Compatible, ExplicitLength, FontSize, FontStyle, FontWeight, IncompatibleUnits, Length, Style, TextDecorationLine, TextTransform)
+import Css exposing (Compatible, ExplicitLength, FontSize, FontStyle, FontWeight, IncompatibleUnits, Length, Style, TextDecorationLine, TextTransform, property)
 
 
 {-| -}
@@ -45,6 +55,26 @@ type alias LineHeight compatible =
 
 
 {-| -}
+type alias TextBlock =
+    { wordBreak : Maybe WordBreak
+    , overflowWrap : Maybe OverflowWrap
+    }
+
+
+type WordBreak
+    = Normal_WordBreak
+    | BreakAll
+    | KeepAll
+    | AutoPhrase
+
+
+type OverflowWrap
+    = Normal_OverflowWrap
+    | BreakWord
+    | Anywhere
+
+
+{-| -}
 init : Typography
 init =
     { fontFamilies = []
@@ -56,6 +86,14 @@ init =
     , letterSpacing = Nothing
     , textDecoration = Nothing
     , textTransform = Nothing
+    }
+
+
+{-| -}
+init_textBlock : TextBlock
+init_textBlock =
+    { wordBreak = Nothing
+    , overflowWrap = Nothing
     }
 
 
@@ -76,6 +114,16 @@ typography t =
     , Maybe.map Css.letterSpacing t.letterSpacing
     , Maybe.map Css.textDecoration t.textDecoration
     , Maybe.map Css.textTransform t.textTransform
+    ]
+        |> List.filterMap identity
+        |> Css.batch
+
+
+{-| -}
+textBlock : TextBlock -> Style
+textBlock t =
+    [ Maybe.map (wordBreakToString >> property "word-break") t.wordBreak
+    , Maybe.map (overflowWrapToString >> property "overflow-wrap") t.overflowWrap
     ]
         |> List.filterMap identity
         |> Css.batch
@@ -139,6 +187,18 @@ setTextTransform { value, textTransform } t =
     { t | textTransform = Just { value = value, textTransform = textTransform } }
 
 
+{-| -}
+setWordBreak : WordBreak -> TextBlock -> TextBlock
+setWordBreak wordBreak tb =
+    { tb | wordBreak = Just wordBreak }
+
+
+{-| -}
+setOverflowWrap : OverflowWrap -> TextBlock -> TextBlock
+setOverflowWrap wrap tb =
+    { tb | overflowWrap = Just wrap }
+
+
 
 -- TEXT ALIGN
 
@@ -189,3 +249,40 @@ webkitFontSmoothingToString fm =
 webkitFontSmoothing : WebkitFontSmoothing -> Style
 webkitFontSmoothing fs =
     Css.property "-webkit-font-smoothing" (webkitFontSmoothingToString fs)
+
+
+
+-- WORD BREAK
+
+
+wordBreakToString : WordBreak -> String
+wordBreakToString wordBreak =
+    case wordBreak of
+        Normal_WordBreak ->
+            "normal"
+
+        BreakAll ->
+            "break-all"
+
+        KeepAll ->
+            "keep-all"
+
+        AutoPhrase ->
+            "auto-phrase"
+
+
+
+-- OVERFLOW WRAP
+
+
+overflowWrapToString : OverflowWrap -> String
+overflowWrapToString wrap =
+    case wrap of
+        Normal_OverflowWrap ->
+            "normal"
+
+        BreakWord ->
+            "break-word"
+
+        Anywhere ->
+            "anywhere"

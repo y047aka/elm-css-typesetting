@@ -5,8 +5,7 @@ import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children, everything)
 import Css.Palette exposing (palette, paletteWithBorder)
-import Css.TextBlock as TextBlock exposing (OverflowWrap(..), TextBlock, WordBreak(..), textBlock)
-import Css.Typography as Typography exposing (TextAlign(..), Typography, WebkitFontSmoothing(..), typography)
+import Css.Typography as Typography exposing (TextAlign(..), Typography, WebkitFontSmoothing(..), typography,OverflowWrap(..), TextBlock, WordBreak(..), textBlock)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
 import Html.Styled exposing (..)
@@ -50,9 +49,9 @@ init () =
                 |> Typography.setTextDecoration Css.none
                 |> Typography.setTextTransform Css.none
       , textBlock =
-            TextBlock.init
-                |> TextBlock.setWordBreak Normal_WordBreak
-                |> TextBlock.setOverflowWrap Normal_OverflowWrap
+            Typography.init_textBlock
+                |> Typography.setWordBreak Normal_WordBreak
+                |> Typography.setOverflowWrap Normal_OverflowWrap
       , fontSize = 16
       , textAlign = Left
       , lineHeight = 1.5
@@ -439,7 +438,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { label = "word-break"
                             , props =
                                 Props.radio
-                                    { value = model.textBlock.wordBreak |> Maybe.map TextBlock.wordBreakToString |> Maybe.withDefault "-"
+                                    { value = model.textBlock.wordBreak |> Maybe.map Typography.wordBreakToString |> Maybe.withDefault "-"
                                     , options = [ "normal", "break-all", "keep-all", "auto-phrase" ]
                                     , onChange =
                                         (\wordBreak m ->
@@ -447,16 +446,16 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                                 | textBlock =
                                                     case wordBreak of
                                                         "normal" ->
-                                                            m.textBlock |> TextBlock.setWordBreak Normal_WordBreak
+                                                            m.textBlock |> Typography.setWordBreak Normal_WordBreak
 
                                                         "break-all" ->
-                                                            m.textBlock |> TextBlock.setWordBreak BreakAll
+                                                            m.textBlock |> Typography.setWordBreak BreakAll
 
                                                         "keep-all" ->
-                                                            m.textBlock |> TextBlock.setWordBreak KeepAll
+                                                            m.textBlock |> Typography.setWordBreak KeepAll
 
                                                         "auto-phrase" ->
-                                                            m.textBlock |> TextBlock.setWordBreak AutoPhrase
+                                                            m.textBlock |> Typography.setWordBreak AutoPhrase
 
                                                         _ ->
                                                             m.textBlock
@@ -470,7 +469,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { label = "overflow-wrap"
                             , props =
                                 Props.radio
-                                    { value = model.textBlock.overflowWrap |> Maybe.map TextBlock.overflowWrapToString |> Maybe.withDefault "-"
+                                    { value = model.textBlock.overflowWrap |> Maybe.map Typography.overflowWrapToString |> Maybe.withDefault "-"
                                     , options = [ "normal", "break-word", "anywhere" ]
                                     , onChange =
                                         (\overflowWrap m ->
@@ -478,13 +477,13 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                                 | textBlock =
                                                     case overflowWrap of
                                                         "normal" ->
-                                                            m.textBlock |> TextBlock.setOverflowWrap Normal_OverflowWrap
+                                                            m.textBlock |> Typography.setOverflowWrap Normal_OverflowWrap
 
                                                         "break-word" ->
-                                                            m.textBlock |> TextBlock.setOverflowWrap BreakWord
+                                                            m.textBlock |> Typography.setOverflowWrap BreakWord
 
                                                         "anywhere" ->
-                                                            m.textBlock |> TextBlock.setOverflowWrap Anywhere
+                                                            m.textBlock |> Typography.setOverflowWrap Anywhere
 
                                                         _ ->
                                                             m.textBlock
