@@ -31,15 +31,20 @@ import Css exposing (Compatible, ExplicitLength, FontSize, FontStyle, FontWeight
 
 {-| -}
 type alias Typography =
-    { fontFamilies : List String
-    , fontSize : Maybe (FontSize {})
-    , fontStyle : Maybe (FontStyle {})
-    , fontWeight : Maybe (FontWeight {})
+    { font : Font
     , textAlign : Maybe (ExplicitLength IncompatibleUnits -> Style)
     , lineHeight : Maybe (LineHeight {})
     , letterSpacing : Maybe (Length {} {})
     , textDecoration : Maybe (TextDecorationLine {})
     , textTransform : Maybe (TextTransform {})
+    }
+
+
+type alias Font =
+    { families : List String
+    , weight : Maybe (FontWeight {})
+    , style : Maybe (FontStyle {})
+    , size : Maybe (FontSize {})
     }
 
 
@@ -77,15 +82,21 @@ type OverflowWrap
 {-| -}
 init : Typography
 init =
-    { fontFamilies = []
-    , fontSize = Nothing
-    , fontStyle = Nothing
-    , fontWeight = Nothing
+    { font = init_font
     , textAlign = Nothing
     , lineHeight = Nothing
     , letterSpacing = Nothing
     , textDecoration = Nothing
     , textTransform = Nothing
+    }
+
+
+init_font : Font
+init_font =
+    { families = []
+    , weight = Nothing
+    , style = Nothing
+    , size = Nothing
     }
 
 
@@ -100,20 +111,28 @@ init_textBlock =
 {-| -}
 typography : Typography -> Style
 typography t =
-    [ case t.fontFamilies of
-        [] ->
-            Nothing
-
-        _ ->
-            Just (Css.fontFamilies t.fontFamilies)
-    , Maybe.map Css.fontSize t.fontSize
-    , Maybe.map Css.fontStyle t.fontStyle
-    , Maybe.map Css.fontWeight t.fontWeight
-    , Maybe.map Css.textAlign t.textAlign
+    [ Maybe.map Css.textAlign t.textAlign
     , Maybe.map Css.lineHeight t.lineHeight
     , Maybe.map Css.letterSpacing t.letterSpacing
     , Maybe.map Css.textDecoration t.textDecoration
     , Maybe.map Css.textTransform t.textTransform
+    ]
+        |> List.filterMap identity
+        |> (::) (font_ t.font)
+        |> Css.batch
+
+
+font_ : Font -> Style
+font_ f =
+    [ case f.families of
+        [] ->
+            Nothing
+
+        _ ->
+            Just (Css.fontFamilies f.families)
+    , Maybe.map Css.fontWeight f.weight
+    , Maybe.map Css.fontStyle f.style
+    , Maybe.map Css.fontSize f.size
     ]
         |> List.filterMap identity
         |> Css.batch
@@ -131,30 +150,6 @@ textBlock t =
 
 
 -- SETTER
-
-
-{-| -}
-setFontFamilies : List String -> Typography -> Typography
-setFontFamilies families t =
-    { t | fontFamilies = families }
-
-
-{-| -}
-setFontSize : FontSize a -> Typography -> Typography
-setFontSize { value, fontSize } t =
-    { t | fontSize = Just { value = value, fontSize = fontSize } }
-
-
-{-| -}
-setFontStyle : FontStyle a -> Typography -> Typography
-setFontStyle { value, fontStyle } t =
-    { t | fontStyle = Just { value = value, fontStyle = fontStyle } }
-
-
-{-| -}
-setFontWeight : FontWeight a -> Typography -> Typography
-setFontWeight { value, fontWeight } t =
-    { t | fontWeight = Just { value = value, fontWeight = fontWeight } }
 
 
 {-| -}
@@ -185,6 +180,35 @@ setTextDecoration { value, textDecorationLine } t =
 setTextTransform : TextTransform compatible -> Typography -> Typography
 setTextTransform { value, textTransform } t =
     { t | textTransform = Just { value = value, textTransform = textTransform } }
+
+
+setFont : Font -> Typography -> Typography
+setFont f t =
+    { t | font = f }
+
+
+{-| -}
+setFontFamilies : List String -> Typography -> Typography
+setFontFamilies families ({ font } as t) =
+    t |> setFont { font | families = families }
+
+
+{-| -}
+setFontSize : FontSize a -> Typography -> Typography
+setFontSize { value, fontSize } ({ font } as t) =
+    t |> setFont { font | size = Just { value = value, fontSize = fontSize } }
+
+
+{-| -}
+setFontStyle : FontStyle a -> Typography -> Typography
+setFontStyle { value, fontStyle } ({ font } as t) =
+    t |> setFont { font | style = Just { value = value, fontStyle = fontStyle } }
+
+
+{-| -}
+setFontWeight : FontWeight a -> Typography -> Typography
+setFontWeight { value, fontWeight } ({ font } as t) =
+    t |> setFont { font | weight = Just { value = value, fontWeight = fontWeight } }
 
 
 {-| -}

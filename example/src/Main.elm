@@ -177,7 +177,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { label = "font-family"
                             , props =
                                 Props.select
-                                    { value = model.typography.fontFamilies |> String.concat
+                                    { value = model.typography.font.families |> String.concat
                                     , options = [ Css.sansSerif.value, Css.serif.value ]
                                     , onChange =
                                         (\fontFamily m ->
@@ -189,6 +189,62 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
 
                                                         "serif" ->
                                                             m.typography |> Typography.setFontFamilies [ "serif" ]
+
+                                                        _ ->
+                                                            m.typography
+                                            }
+                                        )
+                                            >> UpdateProps
+                                    }
+                            , note = ""
+                            }
+                        , Props.field
+                            { label = "font-weight"
+                            , props =
+                                Props.radio
+                                    { value = model.typography.font.weight |> Maybe.map .value |> Maybe.withDefault "-"
+                                    , options = [ Css.lighter.value, Css.normal.value, Css.bold.value, Css.bolder.value ]
+                                    , onChange =
+                                        (\weight m ->
+                                            { m
+                                                | typography =
+                                                    case weight of
+                                                        "lighter" ->
+                                                            m.typography |> Typography.setFontWeight Css.lighter
+
+                                                        "normal" ->
+                                                            m.typography |> Typography.setFontWeight Css.normal
+
+                                                        "bold" ->
+                                                            m.typography |> Typography.setFontWeight Css.bold
+
+                                                        "bolder" ->
+                                                            m.typography |> Typography.setFontWeight Css.bolder
+
+                                                        _ ->
+                                                            m.typography
+                                            }
+                                        )
+                                            >> UpdateProps
+                                    }
+                            , note = ""
+                            }
+                        , Props.field
+                            { label = "font-style"
+                            , props =
+                                Props.radio
+                                    { value = model.typography.font.style |> Maybe.map .value |> Maybe.withDefault "-"
+                                    , options = [ Css.normal.value, Css.italic.value ]
+                                    , onChange =
+                                        (\style m ->
+                                            { m
+                                                | typography =
+                                                    case style of
+                                                        "normal" ->
+                                                            m.typography |> Typography.setFontStyle Css.normal
+
+                                                        "italic" ->
+                                                            m.typography |> Typography.setFontStyle Css.italic
 
                                                         _ ->
                                                             m.typography
@@ -220,62 +276,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                                     , typography = m.typography |> Typography.setFontSize (px (m.fontSize - 1))
                                                 }
                                             )
-                                    }
-                            , note = ""
-                            }
-                        , Props.field
-                            { label = "font-style"
-                            , props =
-                                Props.radio
-                                    { value = model.typography.fontStyle |> Maybe.map .value |> Maybe.withDefault "-"
-                                    , options = [ Css.normal.value, Css.italic.value ]
-                                    , onChange =
-                                        (\style m ->
-                                            { m
-                                                | typography =
-                                                    case style of
-                                                        "normal" ->
-                                                            m.typography |> Typography.setFontStyle Css.normal
-
-                                                        "italic" ->
-                                                            m.typography |> Typography.setFontStyle Css.italic
-
-                                                        _ ->
-                                                            m.typography
-                                            }
-                                        )
-                                            >> UpdateProps
-                                    }
-                            , note = ""
-                            }
-                        , Props.field
-                            { label = "font-weight"
-                            , props =
-                                Props.radio
-                                    { value = model.typography.fontWeight |> Maybe.map .value |> Maybe.withDefault "-"
-                                    , options = [ Css.lighter.value, Css.normal.value, Css.bold.value, Css.bolder.value ]
-                                    , onChange =
-                                        (\weight m ->
-                                            { m
-                                                | typography =
-                                                    case weight of
-                                                        "lighter" ->
-                                                            m.typography |> Typography.setFontWeight Css.lighter
-
-                                                        "normal" ->
-                                                            m.typography |> Typography.setFontWeight Css.normal
-
-                                                        "bold" ->
-                                                            m.typography |> Typography.setFontWeight Css.bold
-
-                                                        "bolder" ->
-                                                            m.typography |> Typography.setFontWeight Css.bolder
-
-                                                        _ ->
-                                                            m.typography
-                                            }
-                                        )
-                                            >> UpdateProps
                                     }
                             , note = ""
                             }
