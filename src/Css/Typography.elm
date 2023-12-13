@@ -33,8 +33,7 @@ import Css exposing (Compatible, ExplicitLength, FontSize, FontStyle, FontWeight
 type alias Typography =
     { font : Font
     , geometry : Geometry
-    , textDecoration : Maybe (TextDecorationLine {})
-    , textTransform : Maybe (TextTransform {})
+    , textSetting : TextSetting
     }
 
 
@@ -50,6 +49,12 @@ type alias Geometry =
     { lineHeight : Maybe (LineHeight {})
     , letterSpacing : Maybe (Length {} {})
     , textAlign : Maybe (ExplicitLength IncompatibleUnits -> Style)
+    }
+
+
+type alias TextSetting =
+    { textDecoration : Maybe (TextDecorationLine {})
+    , textTransform : Maybe (TextTransform {})
     }
 
 
@@ -87,27 +92,21 @@ type OverflowWrap
 {-| -}
 init : Typography
 init =
-    { font = init_font
-    , geometry = init_geometry
-    , textDecoration = Nothing
-    , textTransform = Nothing
-    }
-
-
-init_font : Font
-init_font =
-    { families = []
-    , weight = Nothing
-    , style = Nothing
-    , size = Nothing
-    }
-
-
-init_geometry : Geometry
-init_geometry =
-    { lineHeight = Nothing
-    , letterSpacing = Nothing
-    , textAlign = Nothing
+    { font =
+        { families = []
+        , weight = Nothing
+        , style = Nothing
+        , size = Nothing
+        }
+    , geometry =
+        { lineHeight = Nothing
+        , letterSpacing = Nothing
+        , textAlign = Nothing
+        }
+    , textSetting =
+        { textDecoration = Nothing
+        , textTransform = Nothing
+        }
     }
 
 
@@ -122,12 +121,10 @@ init_textBlock =
 {-| -}
 typography : Typography -> Style
 typography t =
-    [ Maybe.map Css.textDecoration t.textDecoration
-    , Maybe.map Css.textTransform t.textTransform
+    [ font_ t.font
+    , geometry_ t.geometry
+    , textSetting_ t.textSetting
     ]
-        |> List.filterMap identity
-        |> (::) (geometry_ t.geometry)
-        |> (::) (font_ t.font)
         |> Css.batch
 
 
@@ -157,6 +154,15 @@ geometry_ g =
         |> Css.batch
 
 
+textSetting_ : TextSetting -> Style
+textSetting_ ts =
+    [ Maybe.map Css.textDecoration ts.textDecoration
+    , Maybe.map Css.textTransform ts.textTransform
+    ]
+        |> List.filterMap identity
+        |> Css.batch
+
+
 {-| -}
 textBlock : TextBlock -> Style
 textBlock t =
@@ -169,18 +175,6 @@ textBlock t =
 
 
 -- SETTER
-
-
-{-| -}
-setTextDecoration : TextDecorationLine a -> Typography -> Typography
-setTextDecoration { value, textDecorationLine } t =
-    { t | textDecoration = Just { value = value, textDecorationLine = textDecorationLine } }
-
-
-{-| -}
-setTextTransform : TextTransform compatible -> Typography -> Typography
-setTextTransform { value, textTransform } t =
-    { t | textTransform = Just { value = value, textTransform = textTransform } }
 
 
 setFont : Font -> Typography -> Typography
@@ -233,6 +227,23 @@ setLetterSpacing { value, length, numericValue, unitLabel } ({ geometry } as t) 
 setTextAlign : (ExplicitLength IncompatibleUnits -> Style) -> Typography -> Typography
 setTextAlign textAlign ({ geometry } as t) =
     t |> setGeometry { geometry | textAlign = Just textAlign }
+
+
+setTextSetting : TextSetting -> Typography -> Typography
+setTextSetting ts t =
+    { t | textSetting = ts }
+
+
+{-| -}
+setTextDecoration : TextDecorationLine a -> Typography -> Typography
+setTextDecoration { value, textDecorationLine } ({ textSetting } as t) =
+    t |> setTextSetting { textSetting | textDecoration = Just { value = value, textDecorationLine = textDecorationLine } }
+
+
+{-| -}
+setTextTransform : TextTransform compatible -> Typography -> Typography
+setTextTransform { value, textTransform } ({ textSetting } as t) =
+    t |> setTextSetting { textSetting | textTransform = Just { value = value, textTransform = textTransform } }
 
 
 {-| -}
