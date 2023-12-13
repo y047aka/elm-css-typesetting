@@ -32,9 +32,7 @@ import Css exposing (Compatible, ExplicitLength, FontSize, FontStyle, FontWeight
 {-| -}
 type alias Typography =
     { font : Font
-    , textAlign : Maybe (ExplicitLength IncompatibleUnits -> Style)
-    , lineHeight : Maybe (LineHeight {})
-    , letterSpacing : Maybe (Length {} {})
+    , geometry : Geometry
     , textDecoration : Maybe (TextDecorationLine {})
     , textTransform : Maybe (TextTransform {})
     }
@@ -45,6 +43,13 @@ type alias Font =
     , weight : Maybe (FontWeight {})
     , style : Maybe (FontStyle {})
     , size : Maybe (FontSize {})
+    }
+
+
+type alias Geometry =
+    { lineHeight : Maybe (LineHeight {})
+    , letterSpacing : Maybe (Length {} {})
+    , textAlign : Maybe (ExplicitLength IncompatibleUnits -> Style)
     }
 
 
@@ -83,9 +88,7 @@ type OverflowWrap
 init : Typography
 init =
     { font = init_font
-    , textAlign = Nothing
-    , lineHeight = Nothing
-    , letterSpacing = Nothing
+    , geometry = init_geometry
     , textDecoration = Nothing
     , textTransform = Nothing
     }
@@ -100,6 +103,14 @@ init_font =
     }
 
 
+init_geometry : Geometry
+init_geometry =
+    { lineHeight = Nothing
+    , letterSpacing = Nothing
+    , textAlign = Nothing
+    }
+
+
 {-| -}
 init_textBlock : TextBlock
 init_textBlock =
@@ -111,13 +122,11 @@ init_textBlock =
 {-| -}
 typography : Typography -> Style
 typography t =
-    [ Maybe.map Css.textAlign t.textAlign
-    , Maybe.map Css.lineHeight t.lineHeight
-    , Maybe.map Css.letterSpacing t.letterSpacing
-    , Maybe.map Css.textDecoration t.textDecoration
+    [ Maybe.map Css.textDecoration t.textDecoration
     , Maybe.map Css.textTransform t.textTransform
     ]
         |> List.filterMap identity
+        |> (::) (geometry_ t.geometry)
         |> (::) (font_ t.font)
         |> Css.batch
 
@@ -138,6 +147,16 @@ font_ f =
         |> Css.batch
 
 
+geometry_ : Geometry -> Style
+geometry_ g =
+    [ Maybe.map Css.lineHeight g.lineHeight
+    , Maybe.map Css.letterSpacing g.letterSpacing
+    , Maybe.map Css.textAlign g.textAlign
+    ]
+        |> List.filterMap identity
+        |> Css.batch
+
+
 {-| -}
 textBlock : TextBlock -> Style
 textBlock t =
@@ -150,24 +169,6 @@ textBlock t =
 
 
 -- SETTER
-
-
-{-| -}
-setTextAlign : (ExplicitLength IncompatibleUnits -> Style) -> Typography -> Typography
-setTextAlign textAlign t =
-    { t | textAlign = Just textAlign }
-
-
-{-| -}
-setLineHeight : LineHeight compatible -> Typography -> Typography
-setLineHeight { value, lineHeight } t =
-    { t | lineHeight = Just { value = value, lineHeight = lineHeight } }
-
-
-{-| -}
-setLetterSpacing : Length compatible unit -> Typography -> Typography
-setLetterSpacing { value, length, numericValue, unitLabel } t =
-    { t | letterSpacing = Just { value = value, length = length, numericValue = numericValue, units = {}, unitLabel = unitLabel } }
 
 
 {-| -}
@@ -209,6 +210,29 @@ setFontStyle { value, fontStyle } ({ font } as t) =
 setFontWeight : FontWeight a -> Typography -> Typography
 setFontWeight { value, fontWeight } ({ font } as t) =
     t |> setFont { font | weight = Just { value = value, fontWeight = fontWeight } }
+
+
+setGeometry : Geometry -> Typography -> Typography
+setGeometry g t =
+    { t | geometry = g }
+
+
+{-| -}
+setLineHeight : LineHeight compatible -> Typography -> Typography
+setLineHeight { value, lineHeight } ({ geometry } as t) =
+    t |> setGeometry { geometry | lineHeight = Just { value = value, lineHeight = lineHeight } }
+
+
+{-| -}
+setLetterSpacing : Length compatible unit -> Typography -> Typography
+setLetterSpacing { value, length, numericValue, unitLabel } ({ geometry } as t) =
+    t |> setGeometry { geometry | letterSpacing = Just { value = value, length = length, numericValue = numericValue, units = {}, unitLabel = unitLabel } }
+
+
+{-| -}
+setTextAlign : (ExplicitLength IncompatibleUnits -> Style) -> Typography -> Typography
+setTextAlign textAlign ({ geometry } as t) =
+    t |> setGeometry { geometry | textAlign = Just textAlign }
 
 
 {-| -}

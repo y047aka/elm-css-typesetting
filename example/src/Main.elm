@@ -280,6 +280,56 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             , note = ""
                             }
                         , Props.field
+                            { label = "line-height"
+                            , props =
+                                Props.counter
+                                    { value = model.lineHeight
+                                    , toString = \value -> String.fromFloat value
+                                    , onClickPlus =
+                                        UpdateProps
+                                            (\m ->
+                                                { m
+                                                    | lineHeight = ((m.lineHeight * 10) + 1) / 10
+                                                    , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) + 1) / 10))
+                                                }
+                                            )
+                                    , onClickMinus =
+                                        UpdateProps
+                                            (\m ->
+                                                { m
+                                                    | lineHeight = ((m.lineHeight * 10) - 1) / 10
+                                                    , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) - 1) / 10))
+                                                }
+                                            )
+                                    }
+                            , note = ""
+                            }
+                        , Props.field
+                            { label = "letter-spacing"
+                            , props =
+                                Props.counter
+                                    { value = model.letterSpacing
+                                    , toString = \value -> String.fromFloat value ++ "em"
+                                    , onClickPlus =
+                                        UpdateProps
+                                            (\m ->
+                                                { m
+                                                    | letterSpacing = ((m.letterSpacing * 100) + 1) / 100
+                                                    , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) + 1) / 100))
+                                                }
+                                            )
+                                    , onClickMinus =
+                                        UpdateProps
+                                            (\m ->
+                                                { m
+                                                    | letterSpacing = ((m.letterSpacing * 100) - 1) / 100
+                                                    , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) - 1) / 100))
+                                                }
+                                            )
+                                    }
+                            , note = ""
+                            }
+                        , Props.field
                             { label = "text-align"
                             , props =
                                 Props.radio
@@ -327,31 +377,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             , note = ""
                             }
                         , Props.field
-                            { label = "line-height"
-                            , props =
-                                Props.counter
-                                    { value = model.lineHeight
-                                    , toString = \value -> String.fromFloat value
-                                    , onClickPlus =
-                                        UpdateProps
-                                            (\m ->
-                                                { m
-                                                    | lineHeight = ((m.lineHeight * 10) + 1) / 10
-                                                    , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) + 1) / 10))
-                                                }
-                                            )
-                                    , onClickMinus =
-                                        UpdateProps
-                                            (\m ->
-                                                { m
-                                                    | lineHeight = ((m.lineHeight * 10) - 1) / 10
-                                                    , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) - 1) / 10))
-                                                }
-                                            )
-                                    }
-                            , note = ""
-                            }
-                        , Props.field
                             { label = "text-decoration"
                             , props =
                                 Props.radio
@@ -373,31 +398,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                             }
                                         )
                                             >> UpdateProps
-                                    }
-                            , note = ""
-                            }
-                        , Props.field
-                            { label = "letter-spacing"
-                            , props =
-                                Props.counter
-                                    { value = model.letterSpacing
-                                    , toString = \value -> String.fromFloat value ++ "em"
-                                    , onClickPlus =
-                                        UpdateProps
-                                            (\m ->
-                                                { m
-                                                    | letterSpacing = ((m.letterSpacing * 100) + 1) / 100
-                                                    , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) + 1) / 100))
-                                                }
-                                            )
-                                    , onClickMinus =
-                                        UpdateProps
-                                            (\m ->
-                                                { m
-                                                    | letterSpacing = ((m.letterSpacing * 100) - 1) / 100
-                                                    , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) - 1) / 100))
-                                                }
-                                            )
                                     }
                             , note = ""
                             }
