@@ -5,7 +5,7 @@ import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children, everything)
 import Css.Palette exposing (palette, paletteWithBorder)
-import Css.Typography as Typography exposing (TextAlign(..), Typography, WebkitFontSmoothing(..), typography,OverflowWrap(..), TextBlock, WordBreak(..), textBlock)
+import Css.Typography as Typography exposing (TextAlign(..), Typography, WebkitFontSmoothing(..), typography,OverflowWrap(..), WordBreak(..))
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
 import Html.Styled exposing (..)
@@ -29,7 +29,6 @@ main =
 type alias Model =
     { webkitFontSmoothing : WebkitFontSmoothing
     , typography : Typography
-    , textBlock : TextBlock
     , fontSize : Float
     , textAlign : TextAlign
     , lineHeight : Float
@@ -48,8 +47,6 @@ init () =
                 |> Typography.setLineHeight (num 1.5)
                 |> Typography.setTextDecoration Css.none
                 |> Typography.setTextTransform Css.none
-      , textBlock =
-            Typography.init_textBlock
                 |> Typography.setWordBreak Normal_WordBreak
                 |> Typography.setOverflowWrap Normal_OverflowWrap
       , fontSize = 16
@@ -122,7 +119,6 @@ radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transpar
                             , flexDirection column
                             , rowGap (Css.em 1)
                             , typography model.typography
-                            , textBlock model.textBlock
                             , children
                                 [ everything
                                     [ Typography.webkitFontSmoothing model.webkitFontSmoothing ]
@@ -446,19 +442,19 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                                 | textBlock =
                                                     case wordBreak of
                                                         "normal" ->
-                                                            m.textBlock |> Typography.setWordBreak Normal_WordBreak
+                                                            m.typography.textBlock |> Typography.setWordBreak Normal_WordBreak
 
                                                         "break-all" ->
-                                                            m.textBlock |> Typography.setWordBreak BreakAll
+                                                            m.typography.textBlock |> Typography.setWordBreak BreakAll
 
                                                         "keep-all" ->
-                                                            m.textBlock |> Typography.setWordBreak KeepAll
+                                                            m.typography.textBlock |> Typography.setWordBreak KeepAll
 
                                                         "auto-phrase" ->
-                                                            m.textBlock |> Typography.setWordBreak AutoPhrase
+                                                            m.typography.textBlock |> Typography.setWordBreak AutoPhrase
 
                                                         _ ->
-                                                            m.textBlock
+                                                            m.typography.textBlock
                                             }
                                         )
                                             >> UpdateProps
