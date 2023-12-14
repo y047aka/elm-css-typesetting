@@ -131,7 +131,7 @@ render props =
             Html.div []
                 (List.map
                     (\option ->
-                        Html.label [ css [ display block] ]
+                        Html.label [ css [ display block ] ]
                             [ input
                                 [ type_ "radio"
                                 , value option
